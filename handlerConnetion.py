@@ -1,16 +1,25 @@
 import json
 import pprint
+from Delivery import Delivery
 from websocket import create_connection
 ws = create_connection("ws://localhost:3000/cable")
-ws.send(r'{"command":"subscribe","identifier":"{\"channel\":\"DeliveryChannel\"}"}')
+
+
+delivery = Delivery(ws)
+
+
 result = ws.recv()
+print result
 
-
+delivery.start_delivery("esddd")
+print "------"
+result = ws.recv()
 print result
 
 
+ws.close
 
-ws.send( r'{"command":"message","identifier":"{\"channel\":\"DeliveryChannel\"}","data":"{\"message\":\"hello from user2\",\"action\":\"start_delivery\"}"}')
+
 
 
 # ws.send(json.dumps('{"identifier":"{"channel":"RoomChannel"},"command":"speak()"}'))
