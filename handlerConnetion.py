@@ -1,24 +1,28 @@
 import json
 import pprint
+import sys
+from SendSMS import SendSMS
 from Delivery import Delivery
 from websocket import create_connection
+
+
 ws = create_connection("ws://localhost:3000/cable")
 
 
-delivery = Delivery(ws)
+
+def main():
+    delivery = Delivery(ws)
+    result = ws.recv()
+    print result
+    delivery.start_delivery("esddd")
+    print "------"
+    result = ws.recv()
+    print result
 
 
-result = ws.recv()
-print result
-
-delivery.start_delivery("esddd")
-print "------"
-result = ws.recv()
-print result
-
-
-ws.close
-
+if __name__ == "__main__":
+    while 1:
+        main()
 
 
 
