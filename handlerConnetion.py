@@ -8,17 +8,12 @@ from websocket import create_connection
 
 ws = create_connection("ws://localhost:3000/cable")
 
-
-
 def main():
     delivery = Delivery(ws)
     result = ws.recv()
+    result = json.loads(result)
     print result
-    delivery.start_delivery("esddd")
-    print "------"
-    result = ws.recv()
-    print result
-
+    print result.get("type")
 
 if __name__ == "__main__":
     while 1:

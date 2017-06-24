@@ -11,8 +11,10 @@ class Delivery(object):
         message = r'{"command":"message","identifier":"{\"channel\":\"DeliveryChannel\"}","data":"{\"message\":\"%s\",\"action\":\"start_delivery\"}"}' %(argument)
         self.ws.send(message)
 
-    def stop_delivery(arg):
-        pass
+    def stop_delivery(self,argument):
+        print argument
+        message = r'{"command":"message","identifier":"{\"channel\":\"DeliveryChannel\"}","data":"{\"message\":\"%s\",\"action\":\"stop_delivery\"}"}' %(argument)
+        self.ws.send(message)
 
     def open_car(arg):
         pass
