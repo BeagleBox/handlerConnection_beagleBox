@@ -9,6 +9,7 @@ class JSONObject:
         self.__dict__ = d
 
 from SendSMS import SendSMS
+from Battery import Battery
 import json
 from pprint import pprint
 import sys
@@ -28,10 +29,7 @@ import time
 # GPIO.setup(12,GPIO,IN)
 # ser.write(identificadorDeCaminho)
 
-
-
 ws = create_connection("ws://localhost:3000/cable")
-
 
 def serialize_instance(obj):
     d = { '__classname__' : type(obj).__name__ }
@@ -52,41 +50,51 @@ def unserialize_object(d):
 def main():
 
     sendSMS = SendSMS()
+    battery = Battery(ws)
     delivery = Delivery(ws)
     result = ws.recv()
     result = json.loads(result)
-    # pprint(result)
+    pprint("RESULTADO %s"  %result)
 
+    # nivelBateria = GPIO.input(12)
+    nivelBateria = "Medio"
     # result
 
     if result.get('type') == None:
+
         show = result.get('message')
-        destination = show.get('destination').get('departament_name')
-        print destination
+        pprint(show)
 
         if show.get('type') == "Delivery":
-
+            destination = show.get('destination').get('departament_name')
+            print destination
             # Capturar a rota de envio e direcionar para o carrinho
             pprint(show.get('route'))
 
             sender_name = show.get('sender').get('employee_name')
             sender_number = show.get('sender').get('contacts')[0].get('description')
-            sendSMS.smsForSender(sender_name, sender_number, destination)
 
-            recipient = show.get('recipient').get('contacts')[0].get('description')
+            recipient_name = show.get('recipient').get('employee_name')
+            recipient_number = show.get('recipient').get('contacts')[0].get('description')
+            sendSMS.smsForSender(recipient_name, recipient_number, destination)
 
-
-            print sender_name
-            print recipient
-
-
-
-
-        if show.get('type') == "Lock":
+        if show.get('type') == "Open":
             pass
+        if show.get('type') == "infoAdmin":
+            print " --------------------infoAdmin"
 
 
-    # nivelBateria = GPIO.input(12)
+
+    if nivelBateria == "Baixo":
+        pass
+    if nivelBateria == "Medio":
+        battery.getAdmins("MESSAGE")
+    if nivelBateria == "Alto":
+        pass
+
+
+
+
     # resposta = ser.readline()
     # balanca = GPIO.input(10)
     #
@@ -94,7 +102,7 @@ def main():
     #     aviso = ser.readline() #INICIO, FIM, OBSTRUIDO
     # if (resposta == "Deslocamento") :
     #     deslocamento = ser.readline() #NUMERO DE VEZES QUE DESLOCOU NO EIXO X.
-    time.sleep(0.5)
+    # time.sleep(0.5)
 
 
 if __name__ == "__main__":

@@ -23,7 +23,7 @@ class SendSMS(object):
 
     def smsForSender(self,name,contact, destination):
         contact= "+%s" %contact
-        body = ("%s vc recebeu uma entrega em %s " %(name,destination))
+        body = ("%s vc recebeu uma entrega destinada para  %s " %(name,destination))
         message = self.client.messages.create(to=contact,from_="+17088882236",body=body)
 
     def stop_delivery(self,argument):
