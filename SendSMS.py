@@ -1,12 +1,38 @@
 from twilio.rest import Client
 
+# class SendSMS(object):
+#     """docstring for SendSMS."""
+#     def __init__(self):
+#         super(SendSMS, self).__init__()
+#         self.account = "AC8041f486b04273feea9a0a9f67058ba9"
+#         # self.token = "d98e829de9545b0c81ebf4753b00b49c"
+#         # self.client = Client(self.account, self.token)
+#
+#         def check(self,):
+#             print self.account
+#         #
+#         # def sender_sms(self):
+#         #
 class SendSMS(object):
-    """docstring for SendSMS."""
-    def __init__(self, arg):
+    """docstring for Delivery."""
+    def __init__(self):
         super(SendSMS, self).__init__()
         self.account = "AC8041f486b04273feea9a0a9f67058ba9"
         self.token = "d98e829de9545b0c81ebf4753b00b49c"
-        self.client = Client(account, token)
+        self.client = Client(self.account, self.token)
 
-        def sendTeste(self):
-            message = self.client.messages.create(to="+5561991793268",from_="+17088882236",body="Hello there!")
+    def smsForSender(self,name,contact, destination):
+        contact= "+%s" %contact
+        body = ("%s vc recebeu uma entrega em %s " %(name,destination))
+        message = self.client.messages.create(to=contact,from_="+17088882236",body=body)
+
+    def stop_delivery(self,argument):
+        print argument
+        # message = r'{"command":"message","identifier":"{\"channel\":\"DeliveryChannel\"}","data":"{\"message\":\"%s\",\"action\":\"stop_delivery\"}"}' %(argument)
+        # self.ws.send(message)
+
+    def open_car(arg):
+        pass
+
+    def lock_car(arg):
+        pass

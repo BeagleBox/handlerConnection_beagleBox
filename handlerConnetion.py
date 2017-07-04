@@ -1,4 +1,5 @@
-# coding=utf-8
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 # No caso eu to mandando uma mensagem "aviso" e "Desolocamento"
 # pra identificar o tipo de dado que eu estou enviando,
 # a questão do nivel de bateria, e da balança a agente vai pegar da propria placa,
@@ -7,11 +8,10 @@ class JSONObject:
     def __init__(self, d):
         self.__dict__ = d
 
-
-import json
-import pprint
-import sys
 from SendSMS import SendSMS
+import json
+from pprint import pprint
+import sys
 from Delivery import Delivery
 from websocket import create_connection
 from collections import OrderedDict
@@ -51,30 +51,39 @@ def unserialize_object(d):
 
 def main():
 
+    sendSMS = SendSMS()
     delivery = Delivery(ws)
     result = ws.recv()
-    option = {}
-    # result = json.loads(result, encoding=None, cls=None,object_hook=None, parse_float=None,parse_int=None, parse_constant=None,object_pairs_hook=None)
-    result = json.loads(result,object_hook=unserialize_object)
-    print result.get('type')
-    # result = json.dumps(result,indent=4, default=serialize_instance)
+    result = json.loads(result)
+    # pprint(result)
+
     # result
 
     if result.get('type') == None:
         show = result.get('message')
-        print show.get('type')    
-        print "aqqqqa"
+        destination = show.get('destination').get('departament_name')
+        print destination
+
+        if show.get('type') == "Delivery":
+
+            # Capturar a rota de envio e direcionar para o carrinho
+            pprint(show.get('route'))
+
+            sender_name = show.get('sender').get('employee_name')
+            sender_number = show.get('sender').get('contacts')[0].get('description')
+            sendSMS.smsForSender(sender_name, sender_number, destination)
+
+            recipient = show.get('recipient').get('contacts')[0].get('description')
+
+
+            print sender_name
+            print recipient
 
 
 
-    # option = result.get('message')
 
-    # print option['route']
-
-
-    # print option.get("type")
-    # if option == "Delivery":
-    #     print "\n Aqui foi \n"
+        if show.get('type') == "Lock":
+            pass
 
 
     # nivelBateria = GPIO.input(12)
@@ -85,8 +94,6 @@ def main():
     #     aviso = ser.readline() #INICIO, FIM, OBSTRUIDO
     # if (resposta == "Deslocamento") :
     #     deslocamento = ser.readline() #NUMERO DE VEZES QUE DESLOCOU NO EIXO X.
-    # if (trancar == 1) :
-    #     ser.write(trancar)
     time.sleep(0.5)
 
 
