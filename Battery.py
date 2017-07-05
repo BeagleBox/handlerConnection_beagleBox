@@ -10,6 +10,6 @@ class Battery(object):
         message = r'{"command":"message","identifier":"{\"channel\":\"BatteryChannel\"}","data":"{\"message\":\"%s\",\"action\":\"inform\"}"}' %(argument)
         self.ws.send(message)
 
-    def getAdmins(self,argument):
+    def get_admins(self,argument):
         message = r'{"command":"message","identifier":"{\"channel\":\"BatteryChannel\"}","data":"{\"message\":\"%s\",\"action\":\"getAdmins\"}"}' %(argument)
         self.ws.send(message)

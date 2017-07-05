@@ -26,6 +26,11 @@ class SendSMS(object):
         body = ("%s vc recebeu uma entrega destinada para  %s " %(name,destination))
         message = self.client.messages.create(to=contact,from_="+17088882236",body=body)
 
+    def informStatusBatterry(self,name,contact):
+        body = ("%s atencao ao status da bateria: MEDIO " %(name))
+        message = self.client.messages.create(to=contact,from_="+17088882236",body=body)
+
+
     def stop_delivery(self,argument):
         print argument
         # message = r'{"command":"message","identifier":"{\"channel\":\"DeliveryChannel\"}","data":"{\"message\":\"%s\",\"action\":\"stop_delivery\"}"}' %(argument)

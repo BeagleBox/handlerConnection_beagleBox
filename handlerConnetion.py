@@ -47,6 +47,22 @@ def unserialize_object(d):
     else:
         return d
 
+
+def start_delivery(arg):
+    print '\n'
+    print "VAMOOOOOOOOOOOOOOOOOOOOOOOO"
+    print '\n'
+    #Identificadores de caminho
+        # Secretaria-Biblioteca
+        # --
+        #Biblioteca-UED
+        # --
+        #
+    # Comando para Ligar o robô
+    # GPIO.output(21)
+    # time.sleep(0.5)
+    # ser.write(identificadorDeCaminho)
+
 def main():
 
     sendSMS = SendSMS()
@@ -78,22 +94,28 @@ def main():
             recipient_number = show.get('recipient').get('contacts')[0].get('description')
             sendSMS.smsForSender(recipient_name, recipient_number, destination)
 
+            #Identificadores de caminho
+                # Secretaria-Biblioteca
+                # --
+                #Biblioteca-UED
+                # --
+                #
+            #start_delivery("Secretaria-Biblioteca");
+
         if show.get('type') == "Open":
             pass
         if show.get('type') == "infoAdmin":
-            print " --------------------infoAdmin"
-
-
+            pprint(show.get('admins'))
+            admin_name = show.get('admins')[0].get('name')
+            admin_contact = show.get('admins')[0].get('contact')
+            sendSMS.informStatusBatterry(admin_name, admin_contact)
 
     if nivelBateria == "Baixo":
         pass
     if nivelBateria == "Medio":
-        battery.getAdmins("MESSAGE")
+        battery.get_admins("MESSAGE")
     if nivelBateria == "Alto":
         pass
-
-
-
 
     # resposta = ser.readline()
     # balanca = GPIO.input(10)
