@@ -29,7 +29,11 @@ import time
 # GPIO.setup(12,GPIO,IN)
 # ser.write(identificadorDeCaminho)
 
+# def setVariable():
+
 ws = create_connection("ws://localhost:3000/cable")
+nivelBateria = "Medio"
+sendSMSAdmin = "false"
 
 def serialize_instance(obj):
     d = { '__classname__' : type(obj).__name__ }
@@ -48,16 +52,9 @@ def unserialize_object(d):
         return d
 
 
-def start_delivery(arg):
-    print '\n'
-    print "VAMOOOOOOOOOOOOOOOOOOOOOOOO"
-    print '\n'
-    #Identificadores de caminho
-        # Secretaria-Biblioteca
-        # --
-        #Biblioteca-UED
-        # --
-        #
+def start_delivery(rota):
+    print "Entrega para: %s" %rota
+    print "\n SAINDO PARA ENTREGA \n"
     # Comando para Ligar o robô
     # GPIO.output(21)
     # time.sleep(0.5)
@@ -73,7 +70,7 @@ def main():
     pprint("RESULTADO %s"  %result)
 
     # nivelBateria = GPIO.input(12)
-    nivelBateria = "Medio"
+
     # result
 
     if result.get('type') == None:
@@ -83,37 +80,52 @@ def main():
 
         if show.get('type') == "Delivery":
             destination = show.get('destination').get('departament_name')
-            print destination
+            key_access = show.get('key_access')
+            tracker = show.get('tracker')
+
+            print "\n Pedido Gerado para %s com o ID %s e PASSWORD %s" %(destination,tracker,key_access)
+
             # Capturar a rota de envio e direcionar para o carrinho
-            pprint(show.get('route'))
+            route = show.get('route').get('name')
 
             sender_name = show.get('sender').get('employee_name')
             sender_number = show.get('sender').get('contacts')[0].get('description')
 
             recipient_name = show.get('recipient').get('employee_name')
             recipient_number = show.get('recipient').get('contacts')[0].get('description')
-            sendSMS.smsForSender(recipient_name, recipient_number, destination)
-
+            # sendSMS.smsForSender(recipient_name, recipient_number, destination, tracker,key_access)
+            sendSMSAdmin = "true"
             #Identificadores de caminho
                 # Secretaria-Biblioteca
                 # --
                 #Biblioteca-UED
                 # --
                 #
-            #start_delivery("Secretaria-Biblioteca");
+            start_delivery(route);
 
         if show.get('type') == "Open":
             pass
         if show.get('type') == "infoAdmin":
             pprint(show.get('admins'))
-            admin_name = show.get('admins')[0].get('name')
-            admin_contact = show.get('admins')[0].get('contact')
-            sendSMS.informStatusBatterry(admin_name, admin_contact)
+            admins = show.get('admins')
+            for admin in admins:
+                print("---------- Informando Admins ----------")
+                admin_name = admin.get('name')
+                admin_contact = admin.get('contact')
+                #sendSMS.informStatusBatterry(admin_name, admin_contact)
+                sendSMSAdmin = "true"
+
 
     if nivelBateria == "Baixo":
         pass
     if nivelBateria == "Medio":
-        battery.get_admins("MESSAGE")
+         if sendSMSAdmin == 'true':
+            global sendSMSAdmin
+            sendSMSAdmin = 'false'
+            battery.get_admins("MESSAGE")
+            battery.inform("Mudando Status")
+            global nivelBateria
+            nivelBateria = "Baixo"
     if nivelBateria == "Alto":
         pass
 
@@ -128,6 +140,7 @@ def main():
 
 
 if __name__ == "__main__":
+    # setVariable()
     while 1:
         main()
 
