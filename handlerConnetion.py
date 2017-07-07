@@ -34,6 +34,7 @@ import time
 ws = create_connection("ws://localhost:3000/cable")
 nivelBateria = "Medio"
 sendSMSAdmin = "false"
+tracker = ""
 
 def serialize_instance(obj):
     d = { '__classname__' : type(obj).__name__ }
@@ -68,10 +69,9 @@ def main():
     result = ws.recv()
     result = json.loads(result)
     pprint("RESULTADO %s"  %result)
+    resposta = ""
 
     # nivelBateria = GPIO.input(12)
-
-
 
     if result.get('type') == None:
 
@@ -89,6 +89,7 @@ def main():
         if show.get('type') == "Delivery":
             destination = show.get('destination').get('departament_name')
             key_access = show.get('key_access')
+            global tracker
             tracker = show.get('tracker')
 
             print "\n Pedido Gerado para %s com o ID %s e PASSWORD %s" %(destination,tracker,key_access)
@@ -101,8 +102,9 @@ def main():
 
             recipient_name = show.get('recipient').get('employee_name')
             recipient_number = show.get('recipient').get('contacts')[0].get('description')
-            # sendSMS.smsForSender(recipient_name, recipient_number, destination, tracker,key_access
-            start_delivery(route);
+            #sendSMS.smsForSender(recipient_name, recipient_number, destination, tracker,key_access)
+            start_delivery(route)
+            resposta = "Deslocamento"
 
         if show.get('type') == "Open":
             pass
@@ -128,15 +130,30 @@ def main():
     if nivelBateria == "Alto":
         pass
 
-
-
     # resposta = ser.readline()
+    # if (resposta == "Deslocamento") :
+    #     deslocamento = ser.readline() #NUMERO DE VEZES QUE DESLOCOU NO EIXO X.
+
+    if (resposta == "Deslocamento") :
+        #deslocamento = ser.readline() #NUMERO DE VEZES QUE DESLOCOU NO EIXO X.
+        info = 0
+        while info < 10:
+            global tracker
+            print tracker
+            deli = {}
+            deli['tracker'] = tracker
+            deli['current_step'] = info
+            delivery.update_delivery(deli)
+            time.sleep(1)
+            info = info +1
+
+
+
     # balanca = GPIO.input(10)
     #
     # if (resposta == "Aviso") :
     #     aviso = ser.readline() #INICIO, FIM, OBSTRUIDO
-    # if (resposta == "Deslocamento") :
-    #     deslocamento = ser.readline() #NUMERO DE VEZES QUE DESLOCOU NO EIXO X.
+
         # time.sleep(0.5)
 
 
@@ -148,7 +165,6 @@ if __name__ == "__main__":
 
 
 # ws.send(json.dumps('{"identifier":"{"channel":"RoomChannel"},"command":"speak()"}'))
-
 
 # # ws.recv(r'{"identifier":"message","type":"message"}')
 # ws.send (r'[{"identifier"=>{"channel"=>"RoomChannel"}, "command"=> "subscribe"}]')
