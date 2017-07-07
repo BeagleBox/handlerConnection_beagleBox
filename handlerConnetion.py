@@ -54,7 +54,7 @@ def unserialize_object(d):
 
 def start_delivery(rota):
     print "Entrega para: %s" %rota
-    print "\n SAINDO PARA ENTREGA \n"
+    print "\n SAINDO PARA ENTREGA !! \n"
     # Comando para Ligar o robô
     # GPIO.output(21)
     # time.sleep(0.5)
@@ -71,12 +71,20 @@ def main():
 
     # nivelBateria = GPIO.input(12)
 
-    # result
+
 
     if result.get('type') == None:
 
         show = result.get('message')
         pprint(show)
+
+        # result
+        if show.get('type') == "Change":
+            print "ESTADO DA BATERIA MUDOU "
+            global nivelBateria
+            global sendSMSAdmin
+            nivelBateria = "Medio"
+            sendSMSAdmin = "true"
 
         if show.get('type') == "Delivery":
             destination = show.get('destination').get('departament_name')
@@ -93,14 +101,7 @@ def main():
 
             recipient_name = show.get('recipient').get('employee_name')
             recipient_number = show.get('recipient').get('contacts')[0].get('description')
-            # sendSMS.smsForSender(recipient_name, recipient_number, destination, tracker,key_access)
-            sendSMSAdmin = "true"
-            #Identificadores de caminho
-                # Secretaria-Biblioteca
-                # --
-                #Biblioteca-UED
-                # --
-                #
+            # sendSMS.smsForSender(recipient_name, recipient_number, destination, tracker,key_access
             start_delivery(route);
 
         if show.get('type') == "Open":
@@ -112,22 +113,22 @@ def main():
                 print("---------- Informando Admins ----------")
                 admin_name = admin.get('name')
                 admin_contact = admin.get('contact')
-                #sendSMS.informStatusBatterry(admin_name, admin_contact)
-                sendSMSAdmin = "true"
-
+                sendSMS.informStatusBatterry(admin_name, admin_contact)
 
     if nivelBateria == "Baixo":
         pass
     if nivelBateria == "Medio":
          if sendSMSAdmin == 'true':
             global sendSMSAdmin
-            sendSMSAdmin = 'false'
             battery.get_admins("MESSAGE")
             battery.inform("Mudando Status")
             global nivelBateria
-            nivelBateria = "Baixo"
+            sendSMSAdmin = 'false'
+            nivelBateria = "Alto"
     if nivelBateria == "Alto":
         pass
+
+
 
     # resposta = ser.readline()
     # balanca = GPIO.input(10)
@@ -136,7 +137,7 @@ def main():
     #     aviso = ser.readline() #INICIO, FIM, OBSTRUIDO
     # if (resposta == "Deslocamento") :
     #     deslocamento = ser.readline() #NUMERO DE VEZES QUE DESLOCOU NO EIXO X.
-    # time.sleep(0.5)
+        # time.sleep(0.5)
 
 
 if __name__ == "__main__":

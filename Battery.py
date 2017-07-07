@@ -13,3 +13,7 @@ class Battery(object):
     def get_admins(self,argument):
         message = r'{"command":"message","identifier":"{\"channel\":\"BatteryChannel\"}","data":"{\"message\":\"%s\",\"action\":\"getAdmins\"}"}' %(argument)
         self.ws.send(message)
+
+    def change(self,argument):
+        message = r'{"command":"message","identifier":"{\"channel\":\"BatteryChannel\"}","data":"{\"message\":\"%s\",\"action\":\"changestatus\"}"}' %(argument)
+        self.ws.send(message)
