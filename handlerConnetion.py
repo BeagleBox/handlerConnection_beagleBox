@@ -16,25 +16,21 @@ import sys
 from Delivery import Delivery
 from websocket import create_connection
 from collections import OrderedDict
-# import RPi.GPIO as GPIO
-# import serial
+import RPi.GPIO as GPIO
+import serial
 import time
 
-# #Configura a serial e a velocidade de transmissao
-# ser = serial.Serial("/dev/ttyAMA0", 115200)
-# GPIO.setmode(GPIO.BOARD)
-# #Entrada do sinal da balança
-# GPIO.setup(10,GPIO,IN)
-# #Entrada do sinal do nivel de bateria
-# GPIO.setup(12,GPIO,IN)
-# ser.write(identificadorDeCaminho)
 
 # def setVariable():
 
-ws = create_connection("ws://localhost:3000/cable")
+ws = create_connection("ws://17dade94.ngrok.io/cable")
 nivelBateria = "Medio"
 sendSMSAdmin = "false"
 tracker = ""
+total_steps = 0
+current_step = 0
+info = 0
+
 
 def serialize_instance(obj):
     d = { '__classname__' : type(obj).__name__ }
@@ -56,10 +52,18 @@ def unserialize_object(d):
 def start_delivery(rota):
     print "Entrega para: %s" %rota
     print "\n SAINDO PARA ENTREGA !! \n"
+    #Configura a serial e a velocidade de transmissao
+    ser = serial.Serial("/dev/ttyAMA0", 115200)
+    GPIO.setmode(GPIO.BOARD)
+    #Entrada do sinal da balança
+    GPIO.setup(10,GPIO,IN)
+    #Entrada do sinal do nivel de bateria
+    GPIO.setup(12,GPIO,IN)
+    ser.write(identificadorDeCaminho)
     # Comando para Ligar o robô
-    # GPIO.output(21)
-    # time.sleep(0.5)
-    # ser.write(identificadorDeCaminho)
+    GPIO.output(21)
+    time.sleep(0.5)
+    ser.write("p")
 
 def main():
 
@@ -70,6 +74,8 @@ def main():
     result = json.loads(result)
     pprint("RESULTADO %s"  %result)
     resposta = ""
+    global total_steps
+    global current_step
 
     # nivelBateria = GPIO.input(12)
 
@@ -97,12 +103,18 @@ def main():
             # Capturar a rota de envio e direcionar para o carrinho
             route = show.get('route').get('name')
 
+            total_steps = show.get('route').get('total_steps')
+
+            current_step = show.get('route').get('current_step')
+            print total_steps
+            print current_step
+
             sender_name = show.get('sender').get('employee_name')
             sender_number = show.get('sender').get('contacts')[0].get('description')
 
             recipient_name = show.get('recipient').get('employee_name')
             recipient_number = show.get('recipient').get('contacts')[0].get('description')
-            #sendSMS.smsForSender(recipient_name, recipient_number, destination, tracker,key_access)
+            sendSMS.smsForSender(recipient_name, recipient_number, destination, tracker,key_access)
             start_delivery(route)
             resposta = "Deslocamento"
 
@@ -134,24 +146,34 @@ def main():
     # if (resposta == "Deslocamento") :
     #     deslocamento = ser.readline() #NUMERO DE VEZES QUE DESLOCOU NO EIXO X.
 
-    if (resposta == "Deslocamento") :
-        #deslocamento = ser.readline() #NUMERO DE VEZES QUE DESLOCOU NO EIXO X.
-        info = 0
-        while info < 10:
-            global tracker
-            print tracker
-            deli = {}
-            deli['tracker'] = tracker
-            deli['current_step'] = info
-            delivery.update_delivery(deli)
-            time.sleep(1)
-            info = info +1
+    print "Current %s" %current_step
+    print "Total %s" %total_steps
+
+
+    while current_step < total_steps:
+        if (resposta == "Deslocamento") :
+            #deslocamento = ser.readline() #NUMERO DE VEZES QUE DESLOCOU NO EIXO X.
+            # while info < 10:
+                global tracker
+                print tracker
+
+                delivery.update_delivery(info,tracker)
+                time.sleep(7)
+                global info
+                info = info +1
+                current_step = info
+                print "Aqui -----"
+                # sendSMS.stop_delivery("ed")
+
+        else:
+            pass
+
 
 
 
     # balanca = GPIO.input(10)
     #
-    # if (resposta == "Aviso") :
+    # if (resposta == "Aviso") :n
     #     aviso = ser.readline() #INICIO, FIM, OBSTRUIDO
 
         # time.sleep(0.5)
