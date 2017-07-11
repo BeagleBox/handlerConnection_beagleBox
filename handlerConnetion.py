@@ -15,15 +15,15 @@ from pprint import pprint
 import sys
 from Delivery import Delivery
 from websocket import create_connection
-from collections import OrderedDict
-import RPi.GPIO as GPIO
-import serial
+# from collections import OrderedDict
+# import RPi.GPIO as GPIO
+# import serial
 import time
 
 
 # def setVariable():
 
-ws = create_connection("ws://17dade94.ngrok.io/cable")
+ws = create_connection("ws://d6d64fa4.ngrok.io/cable")
 nivelBateria = "Medio"
 sendSMSAdmin = "false"
 tracker = ""
@@ -53,17 +53,17 @@ def start_delivery(rota):
     print "Entrega para: %s" %rota
     print "\n SAINDO PARA ENTREGA !! \n"
     #Configura a serial e a velocidade de transmissao
-    ser = serial.Serial("/dev/ttyAMA0", 115200)
-    GPIO.setmode(GPIO.BOARD)
-    #Entrada do sinal da balança
-    GPIO.setup(10,GPIO,IN)
-    #Entrada do sinal do nivel de bateria
-    GPIO.setup(12,GPIO,IN)
-    ser.write(identificadorDeCaminho)
-    # Comando para Ligar o robô
-    GPIO.output(21)
-    time.sleep(0.5)
-    ser.write("p")
+    # ser = serial.Serial("/dev/ttyAMA0", 115200)
+    # GPIO.setmode(GPIO.BOARD)
+    # #Entrada do sinal da balança
+    # GPIO.setup(10,GPIO,IN)
+    # #Entrada do sinal do nivel de bateria
+    # GPIO.setup(12,GPIO,IN)
+    # ser.write(identificadorDeCaminho)d6d64fa4
+    # # Comando para Ligar o robô
+    # GPIO.output(21)
+    # time.sleep(0.5)
+    # ser.write("p")
 
 def main():
 

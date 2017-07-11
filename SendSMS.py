@@ -17,20 +17,20 @@ class SendSMS(object):
     """docstring for Delivery."""
     def __init__(self):
         super(SendSMS, self).__init__()
-        self.account = "AC233449a7d51e4c884ca79ee9f094c218"
-        self.token = "cfc5d149a8260a204d9a98acc930aeb6"
+        self.account = "ACcba7cacf4fa289433150bf42efc94da5"
+        self.token = "d377eee377d50cf7b0f394952ec471c3"
         self.client = Client(self.account, self.token)
 
     def smsForSender(self,name,contact, destination,id,senha):
         contact= "+%s" %contact
         body = ("%s vc recebeu uma entrega destinada para %s,com ID %s SENHA %s" %(name,destination,id,senha))
-        message = self.client.messages.create(to=contact,from_="+14243584090",body=body)
+        message = self.client.messages.create(to=contact,from_="+14437920115",body=body)
 
 
     def informStatusBatterry(self,name,contact):
         contact= "+%s" %contact
         body = ("%s atencao ao status da bateria: MEDIO " %(name))
-        message = self.client.messages.create(to=contact,from_="+14243584090",body=body)
+        message = self.client.messages.create(to=contact,from_="+14437920115",body=body)
 
 
     def stop_delivery(self,argument):

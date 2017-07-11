@@ -20,6 +20,10 @@ class Delivery(object):
         message = r'{"command":"message","identifier":"{\"channel\":\"DeliveryChannel\"}","data":"{\"message\":\"%s\",\"tracker\":\"%s\",\"action\":\"update_delivery\"}"}' %(argument, tracker)
         self.ws.send(message)
 
+    def update_status(self,argument,tracker):
+        message = r'{"command":"message","identifier":"{\"channel\":\"DeliveryChannel\"}","data":"{\"message\":\"%s\",\"tracker\":\"%s\",\"action\":\"update_status\"}"}' %(argument, tracker)
+        self.ws.send(message)
+
     def open_car(arg):
         pass
 
