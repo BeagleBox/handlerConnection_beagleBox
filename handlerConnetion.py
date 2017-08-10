@@ -23,7 +23,7 @@ import time
 
 # def setVariable():
 
-ws = create_connection("ws://d6d64fa4.ngrok.io/cable")
+ws = create_connection("ws://localhost:3000/cable")
 nivelBateria = "Medio"
 sendSMSAdmin = "false"
 tracker = ""

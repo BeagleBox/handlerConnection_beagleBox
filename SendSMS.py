@@ -24,13 +24,13 @@ class SendSMS(object):
     def smsForSender(self,name,contact, destination,id,senha):
         contact= "+%s" %contact
         body = ("%s vc recebeu uma entrega destinada para %s,com ID %s SENHA %s" %(name,destination,id,senha))
-        message = self.client.messages.create(to=contact,from_="+14437920115",body=body)
+        # message = self.client.messages.create(to=contact,from_="+14437920115",body=body)
 
 
     def informStatusBatterry(self,name,contact):
         contact= "+%s" %contact
         body = ("%s atencao ao status da bateria: MEDIO " %(name))
-        message = self.client.messages.create(to=contact,from_="+14437920115",body=body)
+        # message = self.client.messages.create(to=contact,from_="+14437920115",body=body)
 
 
     def stop_delivery(self,argument):
